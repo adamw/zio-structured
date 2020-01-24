@@ -14,7 +14,7 @@ object TestSocket extends App {
       }
       .flatMap(tasks => HappyEyeballs(tasks, 250.milliseconds))
       .tap(v => putStrLn(s"Connected: ${v.getInetAddress}"))
-      .tapError(error => putStrLn("ERROR: " + error))
+      .tapError(error => putStrLn(s"ERROR: $error"))
       .fold(_ => 1, _ => 0)
   }
 }
