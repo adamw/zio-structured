@@ -5,7 +5,7 @@ import zio.clock.Clock
 import zio.duration._
 
 object HappyEyeballs {
-  def apply[R, E, T](tasks: List[RIO[R, T]], delay: Duration): RIO[R with Clock, T] = tasks match {
+  def apply[R, T](tasks: List[ZIO[R, Throwable, T]], delay: Duration): ZIO[R with Clock, Throwable, T] = tasks match {
     case Nil         => IO.fail(new IllegalStateException("no tasks"))
     case task :: Nil => task
     case task :: otherTasks =>
