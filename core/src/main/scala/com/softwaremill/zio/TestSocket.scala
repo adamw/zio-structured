@@ -19,11 +19,15 @@ object TestSocket extends App {
   }
 
   def newSocket(address: InetAddress, port: Int): ZIO[Blocking, Throwable, Socket] = {
+    @volatile var socket: Socket = null
+    val closeSocket = effectBlocking(if (socket != null) socket.close())
+      .catchAll(_ => ZIO.unit)
+
     // the interrupt might have happened when the socket is already established.
     // In this case, we need to cleanup and close the socket.
-    effectBlocking(new Socket(address, port)).onExit {
-      case Exit.Success(socket) => effectBlocking(socket.close()).catchAll(_ => ZIO.unit)
-      case Exit.Failure(_) => ZIO.unit
-    }
+    effectBlocking {
+      socket = new Socket(address, port)
+      socket
+    }.onInterrupt(closeSocket)
   }
 }
