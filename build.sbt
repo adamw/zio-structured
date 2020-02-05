@@ -10,13 +10,14 @@ lazy val rootProject = (project in file("."))
   .settings(publishArtifact := false, name := "root")
   .aggregate(core)
 
+val zioVersion = "1.0.0-RC17+325-13ddb36d-SNAPSHOT"
+
 lazy val core: Project = (project in file("core"))
   .settings(commonSettings: _*)
   .settings(
     name := "core",
     libraryDependencies ++= Seq(
-      "dev.zio" %% "zio" % "1.0.0-RC17",
-      "dev.zio" %% "zio-nio" % "1.0.0-RC2",
+      "dev.zio" %% "zio" % zioVersion,
       scalaTest
     )
   )
