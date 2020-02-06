@@ -13,13 +13,13 @@ object ReleasableHappyEyeballs {
   ): ZIO[R with Clock, Throwable, T] =
     for {
       successful <- Queue.bounded[T](tasks.size)
-      tasks2 = tasks.map {
+      enqueueingTasks = tasks.map {
         _.onExit {
           case Success(value) => successful.offer(value)
           case Failure(_)     => ZIO.unit
         }
       }
-      _ <- HappyEyeballs(tasks2, delay)
+      _ <- HappyEyeballs(enqueueingTasks, delay)
       // there has to be at least one, otherwise HE would fail
       first :: other <- successful.takeAll
       _ <- ZIO.foreach(other)(releaseExtra)
