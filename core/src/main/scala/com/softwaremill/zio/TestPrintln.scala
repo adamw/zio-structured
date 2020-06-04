@@ -5,7 +5,7 @@ import zio.clock.Clock
 import zio.duration._
 
 object TestPrintln extends App {
-  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
+  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, ExitCode] = {
     val start = System.currentTimeMillis()
     def log(msg: String): UIO[Unit] = UIO {
       val now = System.currentTimeMillis()
@@ -38,7 +38,7 @@ object TestPrintln extends App {
     result
       .tap(v => log(s"WON: $v"))
       .tapError(error => log(s"ERROR: $error"))
-      .fold(_ => 1, _ => 0)
+      .fold(_ => ExitCode.success, _ => ExitCode.failure)
       .untraced
   }
 }
